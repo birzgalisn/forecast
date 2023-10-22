@@ -76,6 +76,14 @@ services:
     <<: *next-common
     hostname: next2
 
+  next3:
+    <<: *next-common
+    hostname: next3
+
+  next4:
+    <<: *next-common
+    hostname: next4
+
   caddy:
     image: caddy:2.7.5-alpine
     ports:
@@ -90,5 +98,7 @@ services:
     depends_on:
       - next1
       - next2
+      - next3
+      - next4
       - api
       - pgadmin

@@ -3,7 +3,7 @@ forecast.niksbirzgalis.com {
 }
 
 www.forecast.niksbirzgalis.com {
-  reverse_proxy next1:3000 next2:3000
+  reverse_proxy next1:3000 next2:3000 next3:3000 next4:3000
 }
 
 api.forecast.niksbirzgalis.com {
