@@ -1,0 +1,91 @@
+version: "3.8"
+
+volumes:
+  db:
+  pgadmin:
+  caddy_data:
+  caddy_config:
+
+networks:
+  db_net:
+  proxy_net:
+
+services:
+  db:
+    image: postgres:16.0-alpine
+    environment:
+      POSTGRES_USER: forecast
+      POSTGRES_PASSWORD: forecast
+      POSTGRES_DB: forecast
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - db_net
+
+  pgadmin:
+    image: dpage/pgadmin4:7.8
+    environment:
+      PGADMIN_DEFAULT_EMAIL: forecast@local.host
+      PGADMIN_DEFAULT_PASSWORD: forecast
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    networks:
+      - db_net
+      - proxy_net
+    depends_on:
+      - db
+
+  api:
+    image: forecast/api:dev
+    build:
+      context: ./api
+      dockerfile: ./Dockerfile
+      target: build-env
+    command: ["dotnet", "watch", "--non-interactive"]
+    environment:
+      DOTNET_ENVIRONMENT: Development
+      DOTNET_URLS: http://+:4000
+      WEATHER_API_KEY: ${WEATHER_API_KEY}
+      OPEN_WEATHER_KEY: ${OPEN_WEATHER_KEY}
+    volumes:
+      - ./api:/App
+    networks:
+      - db_net
+      - proxy_net
+    depends_on:
+      - db
+
+  next:
+    image: forecast/next:dev
+    build:
+      context: ./client
+      dockerfile: ./Dockerfile
+      target: deps
+    command: ["npm", "run", "dev"]
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: https://api.forecast.localhost
+    volumes:
+      - ./client:/app
+    networks:
+      - proxy_net
+    depends_on:
+      - api
+
+  caddy:
+    image: caddy:2.7.5-alpine
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./Caddyfile.dev:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - proxy_net
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    depends_on:
+      - next
+      - api
+      - pgadmin

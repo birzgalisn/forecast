@@ -1,0 +1,15 @@
+forecast.niksbirzgalis.com {
+  redir https://www.forecast.niksbirzgalis.com{uri}
+}
+
+www.forecast.niksbirzgalis.com {
+  reverse_proxy next1:3000 next2:3000
+}
+
+api.forecast.niksbirzgalis.com {
+  reverse_proxy api:4000
+}
+
+pgadmin.forecast.niksbirzgalis.com {
+  reverse_proxy pgadmin:80
+}

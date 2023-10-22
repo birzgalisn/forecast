@@ -1,0 +1,15 @@
+forecast.localhost {
+  redir https://www.forecast.localhost{uri}
+}
+
+www.forecast.localhost {
+  reverse_proxy next:3000
+}
+
+api.forecast.localhost {
+  reverse_proxy api:4000
+}
+
+pgadmin.forecast.localhost {
+  reverse_proxy pgadmin:80
+}
