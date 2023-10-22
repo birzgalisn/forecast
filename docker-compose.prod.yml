@@ -22,6 +22,7 @@ x-next-common: &next-common
     - proxy_net
   depends_on:
     - api
+  restart: always
 
 x-api-common: &api-common
   image: forecast/api:latest
@@ -38,6 +39,7 @@ x-api-common: &api-common
     - proxy_net
   depends_on:
     - db
+  restart: always
 
 services:
   db:
@@ -50,6 +52,7 @@ services:
       - db:/var/lib/postgresql/data
     networks:
       - db_net
+    restart: always
 
   pgadmin:
     image: dpage/pgadmin4:7.8
@@ -63,6 +66,7 @@ services:
       - proxy_net
     depends_on:
       - db
+    restart: always
 
   api:
     <<: *api-common
@@ -102,3 +106,4 @@ services:
       - next4
       - api
       - pgadmin
+    restart: always
