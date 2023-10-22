@@ -16,7 +16,7 @@ x-next-common: &next-common
     context: ./client
     dockerfile: ./Dockerfile
   environment:
-    NODE_ENV: development
+    NODE_ENV: production
     NEXT_PUBLIC_API_URL: https://api.forecast.localhost
   networks:
     - proxy_net
