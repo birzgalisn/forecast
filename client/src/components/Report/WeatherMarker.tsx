@@ -11,7 +11,12 @@ type WeatherMarker = {
 function WeatherMarker({ weatherForecast }: WeatherMarker) {
   return (
     <Marker
-      icon={new Icon({ iconUrl: weatherForecast.icon, iconAnchor: [32, 32] })}
+      icon={
+        new Icon({
+          iconUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/marker-icon.png`,
+          iconAnchor: [12.5, 44],
+        })
+      }
       position={[weatherForecast.lat, weatherForecast.lng]}
     >
       <Popup>

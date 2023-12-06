@@ -25,7 +25,7 @@ export default function Tiles() {
       />
       {!!weather && (
         <TileLayer
-          url={`https://tile.openweathermap.org/map/${weather}/{z}/{x}/{y}.png?appid=43e34b62fd915193d50b8b6655462444`}
+          url={`https://tile.openweathermap.org/map/${weather}/{z}/{x}/{y}.png?appid=${process.env.NEXT_PUBLIC_OPEN_WEATHER_APPID}`}
         />
       )}
     </>

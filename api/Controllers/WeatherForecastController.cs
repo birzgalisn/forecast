@@ -58,10 +58,10 @@ public class WeatherForecastController : ControllerBase
             Lat = saveWeather.Lat,
             Lng = saveWeather.Lng,
             TemperatureC = saveWeather.TemperatureC,
-            WeatherApiTemperatureC = weatherData?.WeatherApi?.Current?.TempC ?? 0,
+            WeatherApiTemperatureC = 0,
             OpenWeatherTemperatureC = weatherData?.OpenWeather?.Main?.Temp ?? 0,
-            Icon = weatherData?.WeatherApi?.Current?.Condition?.Icon ?? "",
-            Condition = weatherData?.WeatherApi?.Current?.Condition?.Text ?? "",
+            Icon = "",
+            Condition = "",
         };
 
         _dbContext.WeatherForecasts.Add(forecast);
