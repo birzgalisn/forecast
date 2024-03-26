@@ -14,7 +14,7 @@ networks:
 
 services:
   db:
-    image: postgres:16.1-alpine
+    image: postgres:16.2
     environment:
       - POSTGRES_USER=$POSTGRES_USER
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
@@ -25,7 +25,7 @@ services:
       - db_net
 
   pgadmin:
-    image: dpage/pgadmin4:8.0
+    image: dpage/pgadmin4:8.4
     environment:
       - PGADMIN_DEFAULT_EMAIL=$PGADMIN_DEFAULT_EMAIL
       - PGADMIN_DEFAULT_PASSWORD=$PGADMIN_DEFAULT_PASSWORD
@@ -46,6 +46,7 @@ services:
     command: dotnet watch --non-interactive
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - DB_CONNECTION_STRING=$DB_CONNECTION_STRING
       - OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
     volumes:
       - ../../api:/App
@@ -66,7 +67,7 @@ services:
       - NODE_ENV=development
       - NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
       - NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
-      - NEXT_PUBLIC_OPEN_WEATHER_APPID=$OPEN_WEATHER_API_KEY
+      - NEXT_PUBLIC_OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
     volumes:
       - ../../client:/app
     networks:
@@ -75,7 +76,7 @@ services:
       - api
 
   caddy:
-    image: caddy:2.7.5-alpine
+    image: caddy:2.7.6
     ports:
       - 80:80
       - 443:443

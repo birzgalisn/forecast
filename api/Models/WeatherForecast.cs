@@ -22,17 +22,6 @@ public class WeatherForecast
     [Required]
     public double TemperatureC { get; set; }
 
-    public double? OpenWeatherTemperatureC { get; set; }
-
-    public double? WeatherApiTemperatureC { get; set; }
-
-    public double? AverageTemperatureF { get; set; }
-
-    public string? Icon { get; set; }
-
-    [StringLength(200)]
-    public string? Condition { get; set; }
-
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
 

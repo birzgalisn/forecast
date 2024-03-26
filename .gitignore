@@ -36,5 +36,7 @@
 **/client/next-env.d.ts
 
 # api
+**/.vs
+**/.mono
 **/api/obj
 **/api/bin

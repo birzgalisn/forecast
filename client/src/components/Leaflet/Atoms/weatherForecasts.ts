@@ -6,11 +6,6 @@ export type WeatherForecast = {
   lat: number;
   lng: number;
   temperatureC: number;
-  openWeatherTemperatureC: number;
-  weatherApiTemperatureC: number;
-  averageTemperatureF?: number;
-  icon: string;
-  condition: string;
   createdAt: string;
   updatedAt?: string;
 };

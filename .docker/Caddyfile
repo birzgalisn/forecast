@@ -1,5 +1,5 @@
 forecast.{$CNAME} {
-  redir https://www.forecast.{$CNAME}{uri}
+  redir https://www.forecast.{$CNAME}
 }
 
 www.forecast.{$CNAME} {

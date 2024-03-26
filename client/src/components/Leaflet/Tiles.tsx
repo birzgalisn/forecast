@@ -21,11 +21,11 @@ export default function Tiles() {
         url={`https://{s}.basemaps.cartocdn.com/${map}/{z}/{x}/{y}${
           Browser.retina ? '@2x.png' : '.png'
         }`}
-        attribution={`&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">Carto</a>, &copy; <a href="https://openweathermap.org">Weather data provided by OpenWeather</a>, &copy; <a href="https://www.weatherapi.com">Free Weather API</a>`}
+        attribution={`&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">Carto</a>, &copy; <a href="https://openweathermap.org">Weather data provided by OpenWeather</a>`}
       />
       {!!weather && (
         <TileLayer
-          url={`https://tile.openweathermap.org/map/${weather}/{z}/{x}/{y}.png?appid=${process.env.NEXT_PUBLIC_OPEN_WEATHER_APPID}`}
+          url={`https://tile.openweathermap.org/map/${weather}/{z}/{x}/{y}.png?appid=${process.env.NEXT_PUBLIC_OPEN_WEATHER_API_KEY}`}
         />
       )}
     </>

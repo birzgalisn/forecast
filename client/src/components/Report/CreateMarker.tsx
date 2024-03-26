@@ -30,6 +30,7 @@ export default function CreateMarker({ position, setPosition }: CreateMarker) {
     event.preventDefault();
 
     if (buttonRef.current) {
+      buttonRef.current.disabled = true;
       buttonRef.current.textContent = 'Saving...';
     }
 
@@ -111,11 +112,11 @@ export default function CreateMarker({ position, setPosition }: CreateMarker) {
           />
         </div>
         <button
-          className="mt-2 w-full rounded-sm border px-3 py-1"
+          className="mt-2 w-full rounded-sm border px-3 py-1 hover:bg-gray-50"
           ref={buttonRef}
           type="submit"
         >
-          Report
+          Create
         </button>
       </form>
     </Popup>

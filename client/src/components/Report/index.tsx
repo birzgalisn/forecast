@@ -21,26 +21,12 @@ export default function Report() {
 
       connection.on('NewForecast', (newWeatherForecast: WeatherForecast) => {
         setWeatherForecasts((prev) => {
-          if (prev.some((f) => f.id === newWeatherForecast.id)) {
+          if (prev.some((wf) => wf.id === newWeatherForecast.id)) {
             return prev;
           }
           return prev.concat(newWeatherForecast);
         });
       });
-
-      connection.on(
-        'FahrenheitCalculated',
-        (forecastId: number, averageTemperatureF: number) => {
-          setWeatherForecasts((prev) =>
-            prev.map((wf) => {
-              if (wf.id === forecastId) {
-                return { ...wf, averageTemperatureF };
-              }
-              return wf;
-            }),
-          );
-        },
-      );
 
       await connection.start();
     };
