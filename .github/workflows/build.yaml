@@ -63,8 +63,8 @@ jobs:
         id: build
         uses: docker/build-push-action@v4
         with:
-          context: ${{ matrix.app }}
-          file: Dockerfile
+          context: .
+          file: ${{ matrix.app }}/Dockerfile
           build-args: |
             POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
             POSTGRES_USER=${{ secrets.POSTGRES_USER }}
