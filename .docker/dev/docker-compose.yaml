@@ -56,8 +56,8 @@ services:
     depends_on:
       - db
 
-  next:
-    image: forecast/next:dev
+  client:
+    image: forecast/client:dev
     build:
       context: ../../client
       dockerfile: ./Dockerfile
@@ -89,6 +89,6 @@ services:
     networks:
       - proxy_net
     depends_on:
-      - next
+      - client
       - api
       - pgadmin

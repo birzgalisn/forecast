@@ -1,6 +1,6 @@
 version: "3"
 
-name: forecast-prod
+name: forecast-staging
 
 volumes:
   db:
@@ -38,13 +38,17 @@ services:
       - db
 
   api:
-    image: $DOCKERHUB_USERNAME/forecast-api:main
+    image: forecast/api:staging
+    build:
+      context: ../../api
+      dockerfile: ./Dockerfile
+      args:
+        - DB_CONNECTION_STRING=$DB_CONNECTION_STRING
+        - OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - DB_CONNECTION_STRING=$DB_CONNECTION_STRING
       - OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
-    volumes:
-      - ../../api:/App
     networks:
       - db_net
       - proxy_net
@@ -52,15 +56,21 @@ services:
       - db
 
   client:
-    image: $DOCKERHUB_USERNAME/forecast-client:main
+    image: forecast/client:staging
+    build:
+      context: ../../client
+      dockerfile: ./Dockerfile
+      args:
+        - OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
+        - NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+        - NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
+        - NEXT_PUBLIC_OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
     environment:
       - NODE_ENV=production
       - OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
       - NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
       - NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
       - NEXT_PUBLIC_OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
-    volumes:
-      - ../../client:/app
     networks:
       - proxy_net
     depends_on:

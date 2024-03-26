@@ -3,7 +3,7 @@ forecast.{$CNAME} {
 }
 
 www.forecast.{$CNAME} {
-  reverse_proxy next:3000
+  reverse_proxy client:3000
 }
 
 api.forecast.{$CNAME} {
