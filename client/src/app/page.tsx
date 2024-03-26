@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import Controls from '@/components/Controls';
 
@@ -15,8 +16,10 @@ const LazyLeaflet = dynamic(() => import('@/components/Leaflet'), {
 export default function Home() {
   return (
     <main>
-      <Controls />
-      <LazyLeaflet />
+      <Suspense>
+        <Controls />
+        <LazyLeaflet />
+      </Suspense>
     </main>
   );
 }

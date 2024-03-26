@@ -1,6 +1,6 @@
 version: "3"
 
-name: forecast-dev
+name: forecast-prod
 
 volumes:
   db:
@@ -42,10 +42,8 @@ services:
     build:
       context: ../../api
       dockerfile: ./Dockerfile
-      target: build-env
-    command: dotnet watch --non-interactive
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - DB_CONNECTION_STRING=$DB_CONNECTION_STRING
       - OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
     volumes:
@@ -61,10 +59,8 @@ services:
     build:
       context: ../../client
       dockerfile: ./Dockerfile
-      target: installer
-    command: pnpm dev
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
       - NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
       - NEXT_PUBLIC_OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
