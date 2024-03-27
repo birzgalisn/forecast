@@ -9,7 +9,7 @@ include:
 
 services:
   api:
-    image: $DOCKERHUB_USERNAME/forecast-api:main
+    image: birzgalisn/forecast-api:main
     environment:
       - DB_CONNECTION_STRING=$DB_CONNECTION_STRING
       - OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
@@ -20,7 +20,7 @@ services:
       - db
 
   client:
-    image: $DOCKERHUB_USERNAME/forecast-client:main
+    image: birzgalisn/forecast-client:main
     environment:
       - OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
     networks:
