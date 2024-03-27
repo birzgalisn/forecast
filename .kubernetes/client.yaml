@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+spec:
+  selector:
+    matchLabels:
+      app: forecast
+      tier: client
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: forecast
+        tier: client
+    spec:
+      containers:
+        - name: client
+          image: birzgalisn/forecast-client:main
+          env:
+            - name: OPEN_WEATHER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: open-weather-api-key
+                  key: OPEN_WEATHER_API_KEY
+            - name: NEXT_PUBLIC_OPEN_WEATHER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: next-public-open-weather-api-key
+                  key: NEXT_PUBLIC_OPEN_WEATHER_API_KEY
+            - name: NEXT_PUBLIC_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: next-public-base-url
+                  key: NEXT_PUBLIC_BASE_URL
+            - name: NEXT_PUBLIC_API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: next-public-api-url
+                  key: NEXT_PUBLIC_API_URL
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          ports:
+            - containerPort: 3000
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - worker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client
+  labels:
+    app: forecast
+    tier: client
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 3000
+  selector:
+    app: forecast
+    tier: client
