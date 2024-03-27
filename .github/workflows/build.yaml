@@ -54,7 +54,8 @@ jobs:
         with:
           path: |
             /tmp/.buildx-cache
-          key: ${{ runner.os }}-${{ matrix.platform }}-${{ matrix.app }}-${{ hashFiles('pnpm-lock.yaml') }}
+          key: |
+            ${{ runner.os }}-${{ matrix.platform }}-${{ matrix.app }}-${{ matrix.app == 'client' && hashFiles('client/pnpm-lock.yaml') || matrix.app == 'api' && hashFiles('api/api.csproj') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.platform }}-${{ matrix.app }}-
             ${{ runner.os }}-${{ matrix.platform }}-
