@@ -36,6 +36,6 @@ remove-prod:
 	$(PROD) $(REMOVE)
 
 remove-dangling:
-	docker rmi -f $(docker images -f "dangling=true" -q)
+	docker image prune -f
 
 remove-all: remove-dev remove-staging remove-prod
