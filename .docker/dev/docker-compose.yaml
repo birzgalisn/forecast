@@ -42,7 +42,7 @@ services:
     build:
       context: ../../api
       dockerfile: ./Dockerfile
-      target: build-env
+      target: builder
     command: dotnet watch --non-interactive
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
