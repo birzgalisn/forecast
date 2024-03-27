@@ -36,4 +36,6 @@ app.MapControllers();
 
 app.MapHub<ForecastHub>("/hub");
 
+app.Urls.Add("http://+:4000");
+
 app.Run();

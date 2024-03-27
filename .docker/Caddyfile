@@ -7,7 +7,7 @@ www.forecast.{$CNAME} {
 }
 
 api.forecast.{$CNAME} {
-  reverse_proxy api:8080
+  reverse_proxy api:4000
 }
 
 pgadmin.forecast.{$CNAME} {
