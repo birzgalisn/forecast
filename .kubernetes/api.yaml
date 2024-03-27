@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: forecast
+spec:
+  selector:
+    matchLabels:
+      app: forecast
+      tier: api
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: forecast
+        tier: api
+    spec:
+      containers:
+        - name: api
+          image: birzgalisn/forecast-api:main
+          env:
+            - name: OPEN_WEATHER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: open-weather-api-key
+                  key: OPEN_WEATHER_API_KEY
+            - name: DB_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: db-connection-string
+                  key: DB_CONNECTION_STRING
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          ports:
+            - containerPort: 4000
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - worker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: forecast
+  labels:
+    app: forecast
+    tier: api
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 4000
+  selector:
+    app: forecast
+    tier: api
