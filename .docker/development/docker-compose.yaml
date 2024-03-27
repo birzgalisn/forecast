@@ -1,6 +1,10 @@
 version: "3"
 
-name: forecast-staging
+name: forecast-development
+
+networks:
+  db_net:
+  proxy_net:
 
 include:
   - ../common/db-compose.yaml
@@ -9,16 +13,18 @@ include:
 
 services:
   api:
-    image: forecast/api:staging
+    image: forecast/api:development
     build:
       context: ../../api
       dockerfile: ./Dockerfile
-      args:
-        - DB_CONNECTION_STRING=$DB_CONNECTION_STRING
-        - OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
+      target: builder
+    command: dotnet watch --non-interactive
     environment:
+      - ASPNETCORE_ENVIRONMENT=Development
       - DB_CONNECTION_STRING=$DB_CONNECTION_STRING
       - OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
+    volumes:
+      - ../../api:/App
     networks:
       - db_net
       - proxy_net
@@ -26,17 +32,19 @@ services:
       - db
 
   client:
-    image: forecast/client:staging
+    image: forecast/client:development
     build:
       context: ../../client
       dockerfile: ./Dockerfile
-      args:
-        - OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
-        - NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-        - NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
-        - NEXT_PUBLIC_OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
+      target: installer
+    command: pnpm dev
     environment:
-      - OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+      - NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
+      - NEXT_PUBLIC_OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
+    volumes:
+      - ../../client:/app
     networks:
       - proxy_net
     depends_on:

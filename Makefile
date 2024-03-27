@@ -1,48 +1,33 @@
-DOCKER_COMPOSE := docker compose --env-file .env
-
-DEV := $(DOCKER_COMPOSE) -f .docker/dev/docker-compose.yaml
-STAGING := $(DOCKER_COMPOSE) -f .docker/staging/docker-compose.yaml
-PROD := $(DOCKER_COMPOSE) -f .docker/prod/docker-compose.yaml
+# development staging production
+ENV ?= development
 
 BUILD := build --parallel
 UP := up
 REMOVE := down -v --rmi all --remove-orphans
 PULL := pull
 
-build-dev:
-	$(DEV) $(BUILD)
+DOCKER_COMPOSE := docker compose --env-file .env
 
-pull-dev:
-	$(DEV) $(PULL)
+DC_FILE := -f .docker/$(ENV)/docker-compose.yaml
 
-start-dev:
-	$(DEV) $(UP)
+build:
+	$(DOCKER_COMPOSE) $(DC_FILE) $(BUILD)
+	@$(MAKE) remove-dangling
 
-remove-dev:
-	$(DEV) $(REMOVE)
+pull:
+	$(DOCKER_COMPOSE) $(DC_FILE) $(PULL)
 
-build-staging:
-	$(STAGING) $(BUILD)
+start:
+	$(DOCKER_COMPOSE) $(DC_FILE) $(UP)
 
-pull-staging:
-	$(STAGING) $(PULL)
-
-start-staging:
-	$(STAGING) $(UP)
-
-remove-staging:
-	$(STAGING) $(REMOVE)
-
-pull-prod:
-	$(PROD) $(PULL)
-
-start-prod:
-	$(PROD) $(UP)
-
-remove-prod:
-	$(PROD) $(REMOVE)
+remove:
+	$(DOCKER_COMPOSE) $(DC_FILE) $(REMOVE)
+	@$(MAKE) remove-dangling
 
 remove-dangling:
 	docker image prune -f
 
-remove-all: remove-dev remove-staging remove-prod
+remove-all:
+	@$(MAKE) remove ENV=development
+	@$(MAKE) remove ENV=staging
+	@$(MAKE) remove ENV=production

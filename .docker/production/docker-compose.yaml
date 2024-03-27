@@ -1,0 +1,29 @@
+version: "3"
+
+name: forecast-production
+
+include:
+  - ../common/db-compose.yaml
+  - ../common/pgadmin-compose.yaml
+  - ../common/caddy-compose.yaml
+
+services:
+  api:
+    image: $DOCKERHUB_USERNAME/forecast-api:main
+    environment:
+      - DB_CONNECTION_STRING=$DB_CONNECTION_STRING
+      - OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
+    networks:
+      - db_net
+      - proxy_net
+    depends_on:
+      - db
+
+  client:
+    image: $DOCKERHUB_USERNAME/forecast-client:main
+    environment:
+      - OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
+    networks:
+      - proxy_net
+    depends_on:
+      - api
