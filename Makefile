@@ -1,41 +1,31 @@
 DOCKER_COMPOSE := docker compose --env-file .env
 
-DEV := $(DOCKER_COMPOSE) -f .docker/dev/docker-compose.yaml
-STAGING := $(DOCKER_COMPOSE) -f .docker/staging/docker-compose.yaml
-PROD := $(DOCKER_COMPOSE) -f .docker/prod/docker-compose.yaml
-
 BUILD := build --parallel
 UP := up
 REMOVE := down -v --rmi all --remove-orphans
+PULL := pull
 
-build-dev:
-	$(DEV) $(BUILD)
+define docker_compose_cmd
+$(DOCKER_COMPOSE) -f .docker/$(1)/docker-compose.yaml
+endef
 
-start-dev:
-	$(DEV) $(UP)
+ENVS := dev staging prod
 
-remove-dev:
-	$(DEV) $(REMOVE)
+$(ENVS:%=build-%):
+	$(call docker_compose_cmd,$*) $(BUILD)
 
-build-staging:
-	$(STAGING) $(BUILD)
+$(ENVS:%=pull-%):
+	$(call docker_compose_cmd,$*) $(PULL)
 
-start-staging:
-	$(STAGING) $(UP)
+$(ENVS:%=start-%):
+	$(call docker_compose_cmd,$*) $(UP)
 
-remove-staging:
-	$(STAGING) $(REMOVE)
-
-build-prod:
-	$(PROD) $(BUILD)
-
-start-prod:
-	$(PROD) $(UP)
-
-remove-prod:
-	$(PROD) $(REMOVE)
+$(ENVS:%=remove-%):
+	$(call docker_compose_cmd,$*) $(REMOVE)
 
 remove-dangling:
 	docker image prune -f
 
-remove-all: remove-dev remove-staging remove-prod
+remove-all: $(ENVS:%=remove-%)
+
+.PHONY: $(ENVS:%=build-%) $(ENVS:%=pull-%) $(ENVS:%=start-%) $(ENVS:%=remove-%) remove-dangling remove-all
