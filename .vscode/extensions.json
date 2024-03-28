@@ -4,6 +4,7 @@
     "bradlc.vscode-tailwindcss",
     "ms-azuretools.vscode-docker",
     "redhat.vscode-yaml",
-    "ms-dotnettools.csharp"
+    "ms-dotnettools.csharp",
+    "editorconfig.editorconfig"
   ]
 }
