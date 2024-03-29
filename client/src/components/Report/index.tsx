@@ -1,12 +1,16 @@
 'use client';
 
-import { useEffect } from 'react';
-import MarkerClusterGroup from 'react-leaflet-cluster';
 import useWeatherForecastsAtom, {
   type WeatherForecast,
 } from '@/components/Leaflet/Atoms/weatherForecasts';
 import WeatherMarker from '@/components/Report/WeatherMarker';
-import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import {
+  HttpTransportType,
+  HubConnectionBuilder,
+  LogLevel,
+} from '@microsoft/signalr';
+import { useEffect } from 'react';
+import MarkerClusterGroup from 'react-leaflet-cluster';
 
 export default function Report() {
   const [weatherForecasts, setWeatherForecasts] = useWeatherForecastsAtom();
@@ -14,7 +18,10 @@ export default function Report() {
   useEffect(() => {
     const openSingalRConnection = async () => {
       const connection = new HubConnectionBuilder()
-        .withUrl(`${process.env.NEXT_PUBLIC_API_URL}/hub`)
+        .withUrl(`${process.env.NEXT_PUBLIC_API_URL}/hub`, {
+          skipNegotiation: true,
+          transport: HttpTransportType.WebSockets,
+        })
         .configureLogging(LogLevel.Information)
         .withAutomaticReconnect()
         .build();
