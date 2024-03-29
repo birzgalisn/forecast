@@ -20,7 +20,7 @@ export default function Report() {
       const connection = new HubConnectionBuilder()
         .withUrl(`${process.env.NEXT_PUBLIC_API_URL}/hub`, {
           skipNegotiation: true,
-          transport: HttpTransportType.WebSockets,
+          transport: HttpTransportType.ServerSentEvents,
         })
         .configureLogging(LogLevel.Information)
         .withAutomaticReconnect()
