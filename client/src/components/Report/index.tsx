@@ -5,9 +5,8 @@ import useWeatherForecastsAtom, {
 } from '@/components/Leaflet/Atoms/weatherForecasts';
 import WeatherMarker from '@/components/Report/WeatherMarker';
 import {
-  HttpTransportType,
   HubConnectionBuilder,
-  LogLevel,
+  LogLevel
 } from '@microsoft/signalr';
 import { useEffect } from 'react';
 import MarkerClusterGroup from 'react-leaflet-cluster';
@@ -18,10 +17,7 @@ export default function Report() {
   useEffect(() => {
     const openSingalRConnection = async () => {
       const connection = new HubConnectionBuilder()
-        .withUrl(`${process.env.NEXT_PUBLIC_API_URL}/hub`, {
-          skipNegotiation: true,
-          transport: HttpTransportType.ServerSentEvents,
-        })
+        .withUrl(`${process.env.NEXT_PUBLIC_API_URL}/hub`)
         .configureLogging(LogLevel.Information)
         .withAutomaticReconnect()
         .build();
