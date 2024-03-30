@@ -21,6 +21,7 @@ services:
       - proxy_net
     depends_on:
       - db
+      - redis
 
   client:
     image: birzgalisn/forecast-client:main

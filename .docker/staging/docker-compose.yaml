@@ -24,6 +24,7 @@ services:
       - proxy_net
     depends_on:
       - db
+      - redis
 
   client:
     image: forecast/client:staging
