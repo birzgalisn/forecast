@@ -4,10 +4,7 @@ import useWeatherForecastsAtom, {
   type WeatherForecast,
 } from '@/components/Leaflet/Atoms/weatherForecasts';
 import WeatherMarker from '@/components/Report/WeatherMarker';
-import {
-  HubConnectionBuilder,
-  LogLevel
-} from '@microsoft/signalr';
+import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { useEffect } from 'react';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 
@@ -29,6 +26,10 @@ export default function Report() {
           }
           return prev.concat(newWeatherForecast);
         });
+      });
+
+      connection.on('ForecastsDeleted', () => {
+        setWeatherForecasts([]);
       });
 
       await connection.start();

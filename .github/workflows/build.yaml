@@ -67,11 +67,6 @@ jobs:
           context: ${{ matrix.app }}
           file: ${{ matrix.app }}/Dockerfile
           build-args: |
-            POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
-            POSTGRES_USER=${{ secrets.POSTGRES_USER }}
-            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-            POSTGRES_DB=${{ secrets.POSTGRES_DB }}
-            DB_CONNECTION_STRING=${{ secrets.DB_CONNECTION_STRING }}
             OPEN_WEATHER_API_KEY=${{ secrets.OPEN_WEATHER_API_KEY }}
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
             NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}

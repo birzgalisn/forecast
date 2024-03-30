@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM node:20.11.1-alpine AS base
+FROM node:20.12-alpine AS base
 
 ENV PNPM_HOME=/root/.local/share/pnpm
 ENV PATH=$PATH:$PNPM_HOME
