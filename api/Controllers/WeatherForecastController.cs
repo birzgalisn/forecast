@@ -25,7 +25,7 @@ public class WeatherForecastController : ControllerBase
         _hub = hub;
     }
 
-    [HttpGet(Name = "GetWeatherForecast")]
+    [HttpGet(Name = "GetWeatherForecasts")]
     public async Task<List<WeatherForecast>> Get()
     {
         var forecasts = await _dbContext.WeatherForecasts
