@@ -26,18 +26,17 @@ public class WeatherForecastController : ControllerBase
     }
 
     [HttpGet(Name = "GetWeatherForecast")]
-    public async Task<ActionResult<List<WeatherForecast>>> Get()
+    public async Task<List<WeatherForecast>> Get()
     {
         var forecasts = await _dbContext.WeatherForecasts
                                         .AsNoTracking()
-                                        .ToListAsync()
-                                        .ConfigureAwait(false);
+                                        .ToListAsync();
 
-        return Ok(forecasts);
+        return forecasts;
     }
 
     [HttpPost(Name = "SaveWeatherForecast")]
-    public async Task<ActionResult<WeatherForecast>> Post([FromBody] SaveWeatherForecast saveWeather)
+    public async Task<WeatherForecast> Post([FromBody] SaveWeatherForecast saveWeather)
     {
         var forecast = new WeatherForecast()
         {
@@ -49,21 +48,21 @@ public class WeatherForecastController : ControllerBase
 
         _dbContext.WeatherForecasts.Add(forecast);
 
-        var saveTask = _dbContext.SaveChangesAsync();
-        var broadcastNewForecast = _hub.Clients.All.NewForecast(forecast);
+        await _dbContext.SaveChangesAsync();
 
-        await Task.WhenAll(saveTask, broadcastNewForecast).ConfigureAwait(false);
+        await _hub.Clients.All.NewForecast(forecast);
 
-        return CreatedAtAction(nameof(Get), new { forecast.Id }, forecast);
+        return forecast;
     }
 
     [HttpDelete(Name = "DeleteWeatherForecasts")]
     public async Task<IActionResult> Delete()
     {
-        var deleteTask = _dbContext.WeatherForecasts.ExecuteDeleteAsync();
-        var broadcastForecastsDeleted = _hub.Clients.All.ForecastsDeleted();
+        var deletedCount = await _dbContext.WeatherForecasts.ExecuteDeleteAsync();
 
-        await Task.WhenAll(deleteTask, broadcastForecastsDeleted).ConfigureAwait(false);
+        await _hub.Clients.All.ForecastsDeleted();
+
+        _logger.LogInformation($"{deletedCount} weather forecasts were deleted");
 
         return Ok();
     }
