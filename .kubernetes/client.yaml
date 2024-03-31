@@ -51,10 +51,5 @@ spec:
       services:
         - name: client
           port: 3000
-          sticky:
-            cookie:
-              httpOnly: true
-              name: client
-              secure: true
   tls:
     certResolver: letsencrypt
