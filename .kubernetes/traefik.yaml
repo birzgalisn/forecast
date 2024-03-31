@@ -1,0 +1,110 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: traefik-ingress-controller
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: traefik-certs-pvc
+
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: traefik
+  labels:
+    app: traefik
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      serviceAccountName: traefik-ingress-controller
+      containers:
+        - name: traefik
+          image: traefik:v2.11
+          args:
+            - --accesslog
+            - --ping=true
+            - --log.level=INFO
+            - --api.dashboard=true
+            - --certificatesresolvers.letsencrypt.acme.dnschallenge=true
+            - --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare
+            - --certificatesresolvers.letsencrypt.acme.dnschallenge.resolvers=1.1.1.1:53,1.0.0.1:53
+            - --certificatesresolvers.letsencrypt.acme.email=webmaster@niksbirzgalis.com
+            - --certificatesresolvers.letsencrypt.acme.storage=/etc/traefik/certs/acme.json
+            - --certificatesresolvers.letsencrypt.acme.certificatesduration=2160
+            # Please note that this is the staging Let's Encrypt server
+            # Once you get things working, you should remove that whole line altogether
+            # - --certificatesresolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+            - --entrypoints.web.address=:80
+            - --entrypoints.web.http.redirections.entrypoint.to=websecure
+            - --entrypoints.web.http.redirections.entrypoint.scheme=https
+            - --entrypoints.websecure.address=:443
+            - --entrypoints.websecure.http.tls=true
+            - --entrypoints.websecure.http.tls.certResolver=letsencrypt
+            - --entrypoints.websecure.http.tls.domains[0].main=niksbirzgalis.com
+            - --entrypoints.websecure.http.tls.domains[0].sans=*.niksbirzgalis.com
+            - --entrypoints.dashboard.address=:8009
+            - --providers.kubernetescrd
+            - --providers.kubernetescrd.allowcrossnamespace=true
+            - --serverstransport.insecureskipverify=true
+            - --global.checknewversion=false
+            - --global.sendanonymoususage=false
+          ports:
+            - name: web
+              containerPort: 80
+            - name: websecure
+              containerPort: 443
+            - name: dashboard
+              containerPort: 8009
+          env:
+            - name: CF_DNS_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflare
+                  key: CF_DNS_API_TOKEN
+          volumeMounts:
+            - name: certificates
+              mountPath: /etc/traefik/certs
+      volumes:
+        - name: certificates
+          persistentVolumeClaim:
+            claimName: traefik-certs-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik
+
+spec:
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      name: web
+      port: 80
+    - protocol: TCP
+      name: websecure
+      port: 443
+    - protocol: TCP
+      name: dashboard
+      port: 8009
+  selector:
+    app: traefik
