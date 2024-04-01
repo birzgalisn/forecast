@@ -18,8 +18,8 @@ spec:
           image: birzgalisn/forecast-client:main
           resources:
             requests:
-              cpu: 75m
-              memory: 128Mi
+              cpu: 100m
+              memory: 256Mi
           ports:
             - containerPort: 3000
 

@@ -29,8 +29,8 @@ spec:
                   key: REDIS_CONNECTION_STRING
           resources:
             requests:
-              cpu: 75m
-              memory: 128Mi
+              cpu: 100m
+              memory: 256Mi
           ports:
             - containerPort: 4000
 
