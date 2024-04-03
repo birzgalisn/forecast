@@ -21,7 +21,17 @@ spec:
               cpu: 100m
               memory: 256Mi
           ports:
-            - containerPort: 3000
+            - name: app
+              containerPort: 3000
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              scheme: HTTP
+              path: /ping
+              port: app
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
 
 ---
 apiVersion: v1
