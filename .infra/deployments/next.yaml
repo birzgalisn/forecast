@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: next
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: next
+  template:
+    metadata:
+      labels:
+        app: next
+      annotations:
+        date: +%H:%M:%S %d/%m/%y
+    spec:
+      containers:
+        - name: next
+          image: birzgalisn/forecast-next:main
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 200m
+              memory: 250Mi
+          ports:
+            - name: app
+              containerPort: 3000
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              scheme: HTTP
+              path: /ping
+              port: app
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: next
+
+spec:
+  type: NodePort
+  ports:
+    - port: 3000
+  selector:
+    app: next
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: next-ingress-route
+
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`www.forecast.niksbirzgalis.com`)
+      kind: Rule
+      services:
+        - name: next
+          port: 3000
+  tls:
+    certResolver: letsencrypt

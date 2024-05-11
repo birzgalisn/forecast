@@ -5,9 +5,7 @@
 **/.mono
 **/.vs*
 
-**/.docker*
-**/.kubernetes
-**/.scripts
+**/.infra*
 **/Dockerfile*
 
 **/node_modules

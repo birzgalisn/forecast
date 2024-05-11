@@ -21,8 +21,8 @@ jobs:
         platform:
           - linux/amd64
         app:
-          - api
-          - client
+          - next
+          - webapi
 
     steps:
       - name: Checkout
@@ -109,8 +109,8 @@ jobs:
     strategy:
       matrix:
         app:
-          - api
-          - client
+          - next
+          - webapi
 
     steps:
       - name: Download digests

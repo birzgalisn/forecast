@@ -1,0 +1,59 @@
+name: forecast-development
+
+include:
+  - ../common/db-compose.yaml
+  - ../common/redis-compose.yaml
+  - ../common/pgadmin-compose.yaml
+  - ../common/traefik-compose.yaml
+
+services:
+  webapi:
+    image: forecast/webapi:development
+    build:
+      context: ../../../webapi
+      dockerfile: ./Dockerfile
+      target: builder
+    command: dotnet watch --non-interactive
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
+      - DB_CONNECTION_STRING=$DB_CONNECTION_STRING
+      - REDIS_CONNECTION_STRING=$REDIS_CONNECTION_STRING
+    volumes:
+      - ../../../webapi:/App
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.webapi.rule=Host(`api.forecast.$CNAME`)
+      - traefik.http.routers.webapi.entrypoints=web
+      - traefik.http.services.webapi.loadbalancer.server.port=4000
+    networks:
+      - db
+      - redis
+      - proxy
+    depends_on:
+      - db
+      - redis
+
+  next:
+    image: forecast/next:development
+    build:
+      context: ../../../next
+      dockerfile: ./Dockerfile
+      target: installer
+    command: pnpm dev
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+      - NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
+      - NEXT_PUBLIC_OPEN_WEATHER_API_KEY=$OPEN_WEATHER_API_KEY
+    volumes:
+      - ../../../next:/app
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.next.rule=Host(`www.forecast.$CNAME`)
+      - traefik.http.routers.next.entrypoints=web
+      - traefik.http.services.next.loadbalancer.server.port=3000
+    networks:
+      - proxy
+    depends_on:
+      - webapi

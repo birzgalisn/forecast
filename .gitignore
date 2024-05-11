@@ -1,19 +1,19 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-**/client/node_modules
-**/client/.pnp
-**/client/.pnp.js
+**/next/node_modules
+**/next/.pnp
+**/next/.pnp.js
 
 # testing
-**/client/coverage
+**/next/coverage
 
 # next.js
-**/client/.next/
-**/client/out/
+**/next/.next/
+**/next/out/
 
 # production
-**/client/build
+**/next/build
 
 # misc
 **/.DS_Store
@@ -29,15 +29,15 @@
 **/!.env.example
 
 # vercel
-**/client/.vercel
+**/next/.vercel
 
 # typescript
-**/client/*.tsbuildinfo
-**/client/next-env.d.ts
+**/next/*.tsbuildinfo
+**/next/next-env.d.ts
 
-# api
-**/api/obj
-**/api/bin
+# webapi
+**/webapi/obj
+**/webapi/bin
 
 # other
 **/.vs

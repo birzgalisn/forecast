@@ -8,7 +8,7 @@ PULL := pull
 
 DOCKER_COMPOSE := docker compose --env-file .env
 
-DC_FILE := -f .docker/$(ENV)/docker-compose.yaml
+DC_FILE := -f .infra/docker/$(ENV)/docker-compose.yaml
 
 build:
 	$(DOCKER_COMPOSE) $(DC_FILE) $(BUILD)
