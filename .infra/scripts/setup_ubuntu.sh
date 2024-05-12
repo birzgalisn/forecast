@@ -4,10 +4,10 @@ set -e  # Exit on error
 
 export DEBIAN_FRONTEND="noninteractive"
 export ARCH="$(dpkg --print-architecture)"
-export CONTAINERD_VERSION="1.7.13"
+export CONTAINERD_VERSION="1.7.16"
 export RUNC_VERSION="1.1.12"
-export CNI_VERSION="1.4.0"
-export KUBERNETES_VERSION="1.29.2"
+export CNI_VERSION="1.4.1"
+export KUBERNETES_VERSION="1.30.0"
 export KUBERNETES_BASE_VERSION="$(echo $KUBERNETES_VERSION | cut -d '.' -f1,2)"
 
 # Update the system
